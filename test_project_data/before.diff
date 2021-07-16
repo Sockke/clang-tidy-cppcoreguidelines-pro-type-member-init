@@ -1,0 +1,189 @@
+diff --git a/src/archon/client/mandated_client.h b/src/archon/client/mandated_client.h
+index 59956c5..8607473 100644
+--- a/src/archon/client/mandated_client.h
++++ b/src/archon/client/mandated_client.h
+@@ -15,15 +15,15 @@ namespace client {
+ struct ClientBasicInfo {
+     std::string type;
+     std::string identity;
+-    bool sync;  // 是否是同步客户端
+-    int create_time;
++    bool sync{}; // 是否是同步客户端
++    int create_time{};
+     std::string psm;
+     std::string cluster;
+     std::string shard_id;
+     std::string dc;
+-    bool long_conn;
++    bool long_conn{};
+     std::string metrics_name;
+-    bool service_discovery;
++    bool service_discovery{};
+     archon::lb::LoadBalanceType load_balance_type;
+     archon::transport::TransportType transport_type;
+     archon::transport::SocketPoolOptions socket_pool_options;
+diff --git a/src/archon/client/raw_client_impl.h b/src/archon/client/raw_client_impl.h
+index 08f5015..11b5f87 100644
+--- a/src/archon/client/raw_client_impl.h
++++ b/src/archon/client/raw_client_impl.h
+@@ -247,7 +247,7 @@ private:
+     std::string service_psm_;
+     std::string service_cluster_{"default"};
+     std::string service_dc_;
+-    bool is_long_conn_;
++    bool is_long_conn_{} {};
+     RawClientOptions raw_client_options_;
+ 
+     std::string basic_info_;  // 该客户端基本信息，用于打日志
+diff --git a/src/archon/client/response_placeholder.h b/src/archon/client/response_placeholder.h
+index d9d1dc1..38572dd 100644
+--- a/src/archon/client/response_placeholder.h
++++ b/src/archon/client/response_placeholder.h
+@@ -43,7 +43,7 @@ public:
+     class BaseRespPlaceHolder {
+     public:
+         std::string StatusMessage;
+-        int32_t StatusCode;
++        int32_t StatusCode{};
+     };
+ 
+     BaseRespPlaceHolder BaseResp;
+diff --git a/src/archon/fbthrift/async/async_socket.h b/src/archon/fbthrift/async/async_socket.h
+index 5fed886..e25b3a4 100644
+--- a/src/archon/fbthrift/async/async_socket.h
++++ b/src/archon/fbthrift/async/async_socket.h
+@@ -35,8 +35,8 @@ public:
+     void setChannel(HeaderClientChannel* pchannel) { pchannel_ = pchannel; }
+ 
+ private:
+-    AsyncSocket* socket_;
+-    HeaderClientChannel* pchannel_;
++  AsyncSocket *socket_{};
++  HeaderClientChannel *pchannel_{};
+ };
+ 
+ class AsyncSocket : public apache::thrift::async::TAsyncSocket {
+diff --git a/src/archon/lb/options.h b/src/archon/lb/options.h
+index e942a34..48dd315 100644
+--- a/src/archon/lb/options.h
++++ b/src/archon/lb/options.h
+@@ -45,10 +45,10 @@ struct LoadBalanceOptions {
+     std::string data_center;
+     std::string service_psm;
+     std::string service_cluster;
+-    bool service_discovery;
++    bool service_discovery{};
+     std::string service_shard_id;
+-    bool shard_fallback;
+-    bool cluster_fallback;
++    bool shard_fallback{};
++    bool cluster_fallback{};
+     bool ipv6_enabled = false;
+     bool dweight_enabled = false;
+ 
+diff --git a/src/archon/lb/types.h b/src/archon/lb/types.h
+index 0c4e8a7..ac7a985 100644
+--- a/src/archon/lb/types.h
++++ b/src/archon/lb/types.h
+@@ -75,7 +75,7 @@ public:
+ 
+     std::unordered_map<std::string, std::vector<ServerStat>> servers;
+ 
+-    int version;
++    int version{};
+     std::shared_ptr<std::vector<std::shared_ptr<archon::transport::Endpoint>>>
+         endpoints;
+ };
+diff --git a/src/archon/log/log.h b/src/archon/log/log.h
+index 18be98a..64e1498 100644
+--- a/src/archon/log/log.h
++++ b/src/archon/log/log.h
+@@ -27,8 +27,8 @@ enum class Result : int {
+ 
+ struct CallLog {
+     std::string log_id;
+-    int64_t cost;
+-    int status;
++    int64_t cost{};
++    int status{};
+ 
+     std::string called;
+     std::string cluster;
+@@ -80,9 +80,9 @@ struct CallLog {
+ 
+ struct AccessLog {
+     std::string log_id;
+-    int64_t cost;
+-    int status;  // 来自rsp.Base.StatusCode
+-    int ret;     // 来自handler的返回值
++    int64_t cost{};
++    int status{}; // 来自rsp.Base.StatusCode
++    int ret{};    // 来自handler的返回值
+ 
+     std::string caller;
+     std::string cluster;
+diff --git a/src/archon/raw/async_socket.h b/src/archon/raw/async_socket.h
+index 5e1ec74..5d2cf54 100644
+--- a/src/archon/raw/async_socket.h
++++ b/src/archon/raw/async_socket.h
+@@ -40,9 +40,9 @@ public:
+     void setChannel(AsyncRawChannel* pchannel) { pchannel_ = pchannel; }
+ 
+ private:
+-    AsyncTransport* socket_;
+-    folly::SocketAddress addr_;
+-    AsyncRawChannel* pchannel_;
++  AsyncTransport *socket_{};
++  folly::SocketAddress addr_;
++  AsyncRawChannel *pchannel_{};
+ };
+ 
+ class AsyncTransport : virtual public folly::AsyncTransportWrapper {
+diff --git a/src/archon/raw/message_channel.h b/src/archon/raw/message_channel.h
+index 297eb34..f0d74ee 100644
+--- a/src/archon/raw/message_channel.h
++++ b/src/archon/raw/message_channel.h
+@@ -45,11 +45,11 @@ public:
+     public:
+         struct sample {
+         public:
+-            uint64_t readBegin;
+-            uint64_t readEnd;
++          uint64_t readBegin{};
++          uint64_t readEnd{};
+ 
+-            sample(SamplingStatus status) : status_(status) {}
+-            SamplingStatus getStatus() const { return status_; }
++          sample(SamplingStatus status) : status_(status) {}
++          SamplingStatus getStatus() const { return status_; }
+ 
+         private:
+             SamplingStatus status_;
+diff --git a/src/archon/rdma/async_rdma_socket.h b/src/archon/rdma/async_rdma_socket.h
+index bdc261e..1edf9db 100644
+--- a/src/archon/rdma/async_rdma_socket.h
++++ b/src/archon/rdma/async_rdma_socket.h
+@@ -44,8 +44,8 @@ public:
+     void setChannel(AsyncRdmaChannel* channel) { channel_ = channel; }
+ 
+ private:
+-    AsyncRdmaSocket* socket_;
+-    AsyncRdmaChannel* channel_;
++  AsyncRdmaSocket *socket_{};
++  AsyncRdmaChannel *channel_{};
+ };
+ 
+ class AsyncRdmaSocket : public ::be::RdmaSocket {
+diff --git a/src/archon/state/archon_store.h b/src/archon/state/archon_store.h
+index 1c80cc7..f526388 100644
+--- a/src/archon/state/archon_store.h
++++ b/src/archon/state/archon_store.h
+@@ -40,7 +40,7 @@ private:
+ struct ArchonAction {
+ public:
+     std::string event;
+-    bool enable;
++    bool enable{};
+     std::string client_id;
+     std::shared_ptr<MandatedClient> client;
+ 
